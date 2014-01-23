@@ -10,6 +10,22 @@ using System.Windows.Forms;
 
 namespace ControlCommands2
 {
+
+    // TODO: add a console design
+
+    // TODO: make custom commands available through config file
+
+    // TODO: create a few commands
+    // - processclean
+    // - dir
+    // - ping
+    // - trace/tracert
+    // - exit
+    // - shutdown
+    // - [open web urls]
+    // - google
+    // - [something with fav music]
+
     public partial class Form1 : Form
     {
         public Form1()
@@ -24,17 +40,6 @@ namespace ControlCommands2
 
         private void textBox1_KeyDown(object sender, KeyEventArgs e)
         {
-            // TODO: create a few commands
-            // - processclean
-            // - dir
-            // - ping
-            // - trace/tracert
-            // - exit
-            // - shutdown
-            // - [open web urls]
-            // - google
-            // - [something with fav music]
-
             if (e.KeyCode == Keys.Enter)
             {
                 String command = textBox1.Text;
