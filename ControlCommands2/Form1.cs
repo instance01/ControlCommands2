@@ -36,6 +36,11 @@ namespace ControlCommands2
         private static extern bool RegisterHotKey(IntPtr hWnd, int id, int fsModifiers, int vk);
         [System.Runtime.InteropServices.DllImport("user32.dll")]
         private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        static extern void mouse_event(int dwFlags, int dx, int dy, int dwData, int dwExtraInfo);
+
+        private const UInt32 LEFTDOWN = 0x0002;
+        private const UInt32 LEFTUP = 0x0004;
 
         public Form1()
         {
@@ -54,10 +59,19 @@ namespace ControlCommands2
                 if (this.Opacity < 0.1)
                 {
                     this.Opacity = 1;
+                    this.TopMost = true;
+
+                    // little hack to set focus on textbox:
+                    Point bef = Cursor.Position;
+                    Cursor.Position = new System.Drawing.Point(this.Location.X + textBox1.Left + 3, this.Location.Y + textBox1.Top + 3);
+                    mouse_event((int)LEFTDOWN, 0, 0, 0, 0);
+                    mouse_event((int)LEFTUP, 0, 0, 0, 0);
+                    Cursor.Position = bef;
                 }
                 else
                 {
                     this.Opacity = 0;
+                    this.TopMost = false;
                 }
                 
             }
