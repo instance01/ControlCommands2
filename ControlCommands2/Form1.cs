@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.IO;
 
 namespace ControlCommands2
 {
@@ -21,14 +20,7 @@ namespace ControlCommands2
     // TODO: create a few commands
     // - processclean
     // - dir
-    // - ping
-    // - trace/tracert
-    // - exit
-    // - shutdown
-    // - [open web urls]
-    // - google
-    // - [something with fav music]
-    // - screenshot
+    // - [music]
 
     public partial class Form1 : Form
     {
@@ -39,9 +31,15 @@ namespace ControlCommands2
         private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
         [System.Runtime.InteropServices.DllImport("user32.dll")]
         static extern void mouse_event(int dwFlags, int dx, int dy, int dwData, int dwExtraInfo);
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
 
         private const UInt32 LEFTDOWN = 0x0002;
         private const UInt32 LEFTUP = 0x0004;
+
+        private int SC_MONITORPOWER = 0xF170;
+        private uint WM_SYSCOMMAND = 0x0112;
+
 
         public Form1()
         {
@@ -84,6 +82,10 @@ namespace ControlCommands2
             "ping",
             "trace",
             "tracert",
+            "google",
+            "screenshot",
+            "black",
+            "sleep"
         };
 
         private void Form1_Load(object sender, EventArgs e)
@@ -122,25 +124,42 @@ namespace ControlCommands2
                 else if (command.StartsWith(cmdlist[2]))
                 {
                     // ping
-                    startCMD(command, false);
+                    Tools.startCMD(command, false);
                 }
                 else if (command.StartsWith(cmdlist[3]))
                 {
                     // trace
-                    startCMD("tracert " + args[1], false);
+                    Tools.startCMD("tracert " + args[1], false);
                 }
                 else if (command.StartsWith(cmdlist[4]))
                 {
                     // tracert
-                    startCMD(command, false);
+                    Tools.startCMD(command, false);
+                }
+                else if (command.StartsWith(cmdlist[5]))
+                {
+                    // google
+                    Tools.startProcess("http://google.com/#q=" + args[1]);
+                }
+                else if (command.StartsWith(cmdlist[6]))
+                {
+                    // screenshot
+                    this.Opacity = 0;
+                    Tools.screenshot();
+                }
+                else if (command.StartsWith(cmdlist[7]))
+                {
+                    // black or blackscreen
+                    SendMessage(this.Handle, WM_SYSCOMMAND, (IntPtr)SC_MONITORPOWER, (IntPtr)2);
+                }
+                else if (command.StartsWith(cmdlist[8]))
+                {
+                    // sleep
+                    Application.SetSuspendState(PowerState.Suspend, false, false); // doesn't force suspending
                 }
                 else
                 {
-                    try
-                    {
-                        System.Diagnostics.Process.Start(command);
-                    }
-                    catch (Exception ex) {}
+                    Tools.startProcess(command);
                     success = false;
                 }
 
@@ -192,41 +211,5 @@ namespace ControlCommands2
             UnregisterHotKey(this.Handle, 0);
         }
 
-
-        public void loadConfig()
-        {
-            String[] lines = File.ReadAllLines("");
-            foreach(String s in lines){
-                String[] s_ = s.Split('#');
-                if (s_.Length > 1)
-                {
-                    String cmd = s_[0];
-                    String script = s_[1];
-                }
-            }
-        }
-
-        public void saveConfig()
-        {
-
-        }
-
-        public void startCMD(String cmd, bool hidden)
-        {
-            if (hidden)
-            {
-                System.Diagnostics.Process process = new System.Diagnostics.Process();
-                System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
-                startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
-                startInfo.FileName = "cmd.exe";
-                startInfo.Arguments = "/C " + cmd;
-                process.StartInfo = startInfo;
-                process.Start();
-            }
-            else
-            {
-                System.Diagnostics.Process.Start("CMD.exe", "/C " + cmd);
-            }
-        }
     }
 }
