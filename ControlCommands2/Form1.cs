@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
 
 namespace ControlCommands2
 {
@@ -77,9 +78,20 @@ namespace ControlCommands2
             }
         }
 
+        List<String> cmdlist = new List<string>() { 
+            "exit",
+            "processclean",
+            "ping",
+            "trace",
+            "tracert",
+        };
+
         private void Form1_Load(object sender, EventArgs e)
         {
             this.Location = new Point(Screen.PrimaryScreen.Bounds.Width / 2 - this.Width / 2, 10);
+            AutoCompleteStringCollection a = new AutoCompleteStringCollection();
+            a.AddRange(cmdlist.ToArray());
+            textBox1.AutoCompleteCustomSource = a;
         }
 
         private void textBox1_KeyDown(object sender, KeyEventArgs e)
@@ -87,21 +99,74 @@ namespace ControlCommands2
             if (e.KeyCode == Keys.Enter)
             {
                 String command = textBox1.Text;
+                String[] args = command.Split(' ');
+
+                if (args.Length < 2)
+                {
+                    args = new String[] { command, " " };
+                }
 
                 // is false if no default command could be executed
                 bool success = true;
 
-                switch (command)
+                if (command.StartsWith(cmdlist[0]))
                 {
-                    case "exit":
+                    // exit
+                    Application.Exit();
+                }
+                else if (command.StartsWith(cmdlist[1]))
+                {
+                    // processclean
+
+                }
+                else if (command.StartsWith(cmdlist[2]))
+                {
+                    // ping
+                    startCMD(command, false);
+                }
+                else if (command.StartsWith(cmdlist[3]))
+                {
+                    // trace
+                    startCMD("tracert " + args[1], false);
+                }
+                else if (command.StartsWith(cmdlist[4]))
+                {
+                    // tracert
+                    startCMD(command, false);
+                }
+                else
+                {
+                    try
+                    {
+                        System.Diagnostics.Process.Start(command);
+                    }
+                    catch (Exception ex) {}
+                    success = false;
+                }
+
+                /*switch (command)
+                {
+                    case cmdlist[0]:
                         Application.Exit();
+                        break;
+                    case "processclean":
+                        
+                        break;
+                    case "ping":
+                        startCMD(command, false);
+                        break;
+                    case "trace":
+                        startCMD("tracert " + args[1], false);
+                        break;
+                    case "tracert":
+                        startCMD(command, false);
                         break;
                     default:
                         // TODO: open process
 
                         success = false;
                         break;
-                }
+                }*/
 
                 // update listbox
                 if (success)
@@ -112,6 +177,12 @@ namespace ControlCommands2
                         listBox1.Height = listBox1.ItemHeight * (listBox1.Items.Count + 1);
                     }
                 }
+
+                // update rest
+                textBox1.Text = "";
+                this.Opacity = 0;
+                this.TopMost = false;
+
                 return;
             }
         }
@@ -119,6 +190,43 @@ namespace ControlCommands2
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             UnregisterHotKey(this.Handle, 0);
+        }
+
+
+        public void loadConfig()
+        {
+            String[] lines = File.ReadAllLines("");
+            foreach(String s in lines){
+                String[] s_ = s.Split('#');
+                if (s_.Length > 1)
+                {
+                    String cmd = s_[0];
+                    String script = s_[1];
+                }
+            }
+        }
+
+        public void saveConfig()
+        {
+
+        }
+
+        public void startCMD(String cmd, bool hidden)
+        {
+            if (hidden)
+            {
+                System.Diagnostics.Process process = new System.Diagnostics.Process();
+                System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
+                startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+                startInfo.FileName = "cmd.exe";
+                startInfo.Arguments = "/C " + cmd;
+                process.StartInfo = startInfo;
+                process.Start();
+            }
+            else
+            {
+                System.Diagnostics.Process.Start("CMD.exe", "/C " + cmd);
+            }
         }
     }
 }

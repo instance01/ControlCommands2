@@ -35,8 +35,6 @@
             // 
             // textBox1
             // 
-            this.textBox1.AutoCompleteCustomSource.AddRange(new string[] {
-            "exit"});
             this.textBox1.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
             this.textBox1.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
             this.textBox1.BackColor = System.Drawing.Color.Black;
