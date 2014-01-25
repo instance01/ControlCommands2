@@ -91,8 +91,19 @@ namespace ControlCommands2
         private void Form1_Load(object sender, EventArgs e)
         {
             this.Location = new Point(Screen.PrimaryScreen.Bounds.Width / 2 - this.Width / 2, 10);
+
+            // load autocomplete
             AutoCompleteStringCollection a = new AutoCompleteStringCollection();
             a.AddRange(cmdlist.ToArray());
+            List<String> cmdlist_ = new List<string>();
+            List<String> cmdlist__ = new List<string>();
+            cmdlist_.AddRange(cmdlist.ToArray());
+            foreach (String s in cmdlist_)
+            {
+                String s_ = "." + s;
+                cmdlist__.Add(s_);
+            }
+            a.AddRange(cmdlist__.ToArray());
             textBox1.AutoCompleteCustomSource = a;
         }
 
@@ -106,6 +117,11 @@ namespace ControlCommands2
                 if (args.Length < 2)
                 {
                     args = new String[] { command, " " };
+                }
+
+                if (command.StartsWith("."))
+                {
+                    command = command.Remove(0, 1);
                 }
 
                 // is false if no default command could be executed
