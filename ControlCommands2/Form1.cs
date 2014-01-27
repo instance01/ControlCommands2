@@ -18,9 +18,9 @@ namespace ControlCommands2
     // the [batch command] will be saved into a batch file, unfortunately only win batch commands available though
 
     // TODO: create a few commands
-    // - processclean
     // - dir
     // - [music]
+    // - youtube download
 
     public partial class Form1 : Form
     {
@@ -139,8 +139,10 @@ namespace ControlCommands2
                     Tools.killProcess("jusched"); // java updater
                     Tools.killProcess("ssh-agent"); // git ssh stuff, doesn't terminate itself after i pushed a commit, dun need dat
                     Tools.killProcess("jusched");
-                    Tools.killProcess("nvxdsync"); // NVIDIA (runs on SYSTEM though)
-                    Tools.killProcess("nvSCPAPISvr"); // NVIDIA (runs on SYSTEM though)
+
+                    // Access denied for these (running on SYSTEM) and don't want UAC for ControlCommands
+                    //Tools.killProcess("nvxdsync"); // NVIDIA (runs on SYSTEM though)
+                    //Tools.killProcess("nvSCPAPISvr"); // NVIDIA (runs on SYSTEM though)
                 }
                 else if (command.StartsWith(cmdlist[2]))
                 {
