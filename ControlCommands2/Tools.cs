@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace ControlCommands2
 {
@@ -67,6 +68,21 @@ namespace ControlCommands2
             g.Dispose();
             String path = System.Environment.GetFolderPath(Environment.SpecialFolder.MyPictures) + "\\" +  DateTime.Now.ToString("ddMM_HHmmss_") + r.Next(100).ToString() + ".png";
             b.Save(path, System.Drawing.Imaging.ImageFormat.Png);
+        }
+
+        public static void killProcess(String name)
+        {
+            try
+            {
+                foreach (Process proc in Process.GetProcessesByName(name))
+                {
+                    proc.Kill();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
     }
 }

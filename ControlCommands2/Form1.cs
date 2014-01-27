@@ -135,7 +135,12 @@ namespace ControlCommands2
                 else if (command.StartsWith(cmdlist[1]))
                 {
                     // processclean
-
+                    Tools.killProcess("nvbackend"); // NVIDIA stuff I don't need
+                    Tools.killProcess("jusched"); // java updater
+                    Tools.killProcess("ssh-agent"); // git ssh stuff, doesn't terminate itself after i pushed a commit, dun need dat
+                    Tools.killProcess("jusched");
+                    Tools.killProcess("nvxdsync"); // NVIDIA (runs on SYSTEM though)
+                    Tools.killProcess("nvSCPAPISvr"); // NVIDIA (runs on SYSTEM though)
                 }
                 else if (command.StartsWith(cmdlist[2]))
                 {
