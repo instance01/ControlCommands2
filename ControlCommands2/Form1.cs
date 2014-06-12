@@ -136,6 +136,7 @@ namespace ControlCommands2
                 {
                     // processclean
                     Tools.killProcess("nvbackend"); // NVIDIA stuff I don't need
+                    Tools.killProcess("nvtray"); // NVIDIA stuff I don't need
                     Tools.killProcess("jusched"); // java updater
                     Tools.killProcess("ssh-agent"); // git ssh stuff, doesn't terminate itself after i pushed a commit, dun need dat
                     Tools.killProcess("jusched");
@@ -162,11 +163,17 @@ namespace ControlCommands2
                 else if (command.StartsWith(cmdlist[5]))
                 {
                     // google
-                    Tools.startProcess("http://google.com/#q=" + args[1]);
+                    string req = "";
+                    for (int i = 1; i < args.Length; i++)
+                    {
+                        req += " " + args[i];
+                    }
+                    Tools.startProcess("http://google.com/#q=" + Uri.EscapeDataString(req.Substring(1)));
                 }
                 else if (command.StartsWith(cmdlist[6]))
                 {
                     // screenshot
+                    // ff: pretty much ~90% of all command uses were 'screenshot'
                     this.Opacity = 0;
                     Tools.screenshot();
                 }
